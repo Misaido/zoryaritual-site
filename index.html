@@ -355,6 +355,15 @@
     gap: 12px;
     flex-wrap: wrap;
   }
+  /* Honeypot. Off-screen rather than display:none, because some bots
+     skip fields that are explicitly hidden. Real people never see it. */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
   .form-row input[type="email"] {
     flex: 1;
     min-width: 220px;
@@ -611,8 +620,16 @@
         <form id="waitlist-form" novalidate>
           <div class="form-row">
             <label for="email" style="position:absolute; left:-9999px;">Email address</label>
-            <input type="email" id="email" name="email" placeholder="you@email.com" required autocomplete="email">
+            <input type="email" id="email" name="email" placeholder="you@email.com" required autocomplete="email" maxlength="254" spellcheck="false">
             <button type="submit" id="submit-btn">Join the waitlist</button>
+          </div>
+
+          <!-- Honeypot. Named _gotcha, which Formspree also discards server
+               side, so a bot has to beat both checks. tabindex="-1" keeps it
+               out of the keyboard tab order for screen reader users. -->
+          <div class="hp" aria-hidden="true">
+            <label for="company">Company (leave this empty)</label>
+            <input type="text" id="company" name="_gotcha" tabindex="-1" autocomplete="off">
           </div>
           <p class="form-note" id="form-note">No spam. Just a note when there's a seat for you.</p>
           <p class="form-success" id="form-success" role="status">You're on the list. We'll be in touch.</p>
@@ -666,8 +683,38 @@
     var errorEl = document.getElementById('form-error');
     var btn = document.getElementById('submit-btn');
     var input = document.getElementById('email');
+    var honeypot = document.getElementById('company');
 
     var wired = FORMSPREE_ENDPOINT.indexOf('formspree.io') !== -1;
+
+    // A value beginning with one of these is treated as a formula by Excel
+    // and Google Sheets, so an exported waitlist CSV could execute it. No
+    // mainstream provider issues addresses starting with them.
+    var FORMULA_STARTERS = ['=', '+', '-', '@'];
+    var EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    function validationError(value) {
+      if (!value) {
+        return 'Please enter your email address.';
+      }
+      if (value.length > 254) {
+        return 'That email address is too long.';
+      }
+      if (FORMULA_STARTERS.indexOf(value.charAt(0)) !== -1) {
+        return 'Please enter an address starting with a letter or a number.';
+      }
+      if (!EMAIL_PATTERN.test(value)) {
+        return 'Please enter a valid email address.';
+      }
+      return null;
+    }
+
+    function showSuccess() {
+      row.style.display = 'none';
+      note.style.display = 'none';
+      errorEl.classList.remove('visible');
+      success.classList.add('visible');
+    }
 
     if (!wired) {
       // No backend yet: be honest about it rather than faking a confirmation.
@@ -684,19 +731,27 @@
       e.preventDefault();
       errorEl.classList.remove('visible');
 
+      // A bot filled a field no person can see. Show the ordinary success
+      // state so it learns nothing, and send nothing anywhere.
+      if (honeypot.value !== '') {
+        showSuccess();
+        return;
+      }
+
       var value = input.value.trim();
+
+      var problem = validationError(value);
+      if (problem) {
+        showError(problem);
+        input.focus();
+        return;
+      }
 
       if (!wired) {
         window.location.href =
           'mailto:' + CONTACT_EMAIL +
           '?subject=' + encodeURIComponent('Zorya waitlist') +
           '&body=' + encodeURIComponent('Please add me to the Zorya waitlist.\n\n' + value);
-        return;
-      }
-
-      if (!value || value.indexOf('@') === -1) {
-        showError('Please enter a valid email address.');
-        input.focus();
         return;
       }
 
@@ -710,9 +765,7 @@
       })
         .then(function (res) {
           if (!res.ok) { throw new Error('Bad status ' + res.status); }
-          row.style.display = 'none';
-          note.style.display = 'none';
-          success.classList.add('visible');
+          showSuccess();
         })
         .catch(function () {
           btn.disabled = false;
