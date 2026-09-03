@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zorya | Beauty infrastructure for the modern routine</title>
+<meta name="description" content="Zorya unifies professional treatments, at-home devices, and daily skincare into one intelligently scheduled system.">
+<link rel="canonical" href="https://zoryaritual.com/">
+
+<!-- Link previews (messages, socials) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Zorya">
+<meta property="og:url" content="https://zoryaritual.com/">
+<meta property="og:title" content="Zorya | Beauty infrastructure for the modern routine">
+<meta property="og:description" content="Professional treatments, at-home devices, and daily skincare, in one place. Zorya handles the part nobody enjoys: the timing.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zorya | Beauty infrastructure for the modern routine">
+<meta name="twitter:description" content="Professional treatments, at-home devices, and daily skincare, in one place. Zorya handles the part nobody enjoys: the timing.">
+<meta name="theme-color" content="#FAF7F4">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<!-- Set the theme before first paint so there is no flash. -->
+<script>
+(function () {
+  try {
+    var s = localStorage.getItem('zorya-theme');
+    var d = s || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', d);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
+<style>
+  /* ---------- Theme tokens ----------
+     Light is the original palette. Dark mirrors the app's "Glamour" theme
+     from protocol-mobile/src/shared/theme/tokens.ts. */
+  :root,
+  :root[data-theme="light"] {
+    --bg: #FAF7F4;
+    --card: #FFFFFF;
+    --subtle: #F5F0EB;
+    --border: rgba(26, 20, 16, 0.09);
+    --text: #1A1410;
+    --muted: #7A6A5A;
+    --gold: #B8924A;
+    --gold-light: #D4AF72;
+    --rose: #C4847A;
+    --violet: #7A6490;
+    --sage: #6A8A6A;
+
+    /* Waitlist panel */
+    --wl-a: #1A1410;
+    --wl-b: #2A1F2E;
+    --wl-border: transparent;
+    --wl-text: #F5F0EB;
+    --wl-text-muted: rgba(245, 240, 235, 0.68);
+    --wl-note: rgba(245, 240, 235, 0.5);
+    --wl-field-bg: rgba(245, 240, 235, 0.06);
+    --wl-field-border: rgba(245, 240, 235, 0.18);
+    --wl-placeholder: rgba(245, 240, 235, 0.42);
+    --btn-bg: #D4AF72;
+    --btn-bg-hover: #E4C08A;
+    --btn-fg: #1A1410;
+    --error: #E8A9A0;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0D0A12;
+    --card: #17121F;
+    --subtle: #201828;
+    --border: #2E2240;
+    --text: #F5F0EB;
+    --muted: #9A8A7A;
+    --gold: #C9A84C;
+    --gold-light: #E0C070;
+    --rose: #C4847A;
+    --violet: #9B7FBF;
+    --sage: #7AAA7A;
+
+    --wl-a: #17121F;
+    --wl-b: #2A1E3A;
+    --wl-border: #2E2240;
+    --wl-text: #F5F0EB;
+    --wl-text-muted: rgba(245, 240, 235, 0.62);
+    --wl-note: rgba(245, 240, 235, 0.45);
+    --wl-field-bg: rgba(245, 240, 235, 0.05);
+    --wl-field-border: #3A2E4A;
+    --wl-placeholder: rgba(245, 240, 235, 0.38);
+    --btn-bg: #E0C070;
+    --btn-bg-hover: #EED08A;
+    --btn-fg: #0D0A12;
+    --error: #E8A9A0;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    line-height: 1.12;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  p { margin: 0; }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    padding: 32px 0 0;
+  }
+  .nav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .nav-link {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .nav-link:hover { color: var(--text); border-color: var(--gold); }
+
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .theme-toggle:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .theme-toggle svg { width: 17px; height: 17px; display: block; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon,
+  :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 96px 0 0;
+  }
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 6vw, 58px);
+    max-width: 13ch;
+  }
+  .hero .sub {
+    margin-top: 26px;
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 46ch;
+    line-height: 1.6;
+  }
+
+  /* ---------- Signature: dawn-to-dusk thread ---------- */
+  .thread {
+    margin-top: 56px;
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--gold) 0%,
+      var(--gold-light) 22%,
+      var(--rose) 50%,
+      var(--violet) 78%,
+      var(--gold) 100%
+    );
+    background-size: 200% 100%;
+    animation: drift 14s linear infinite;
+    opacity: 0.85;
+  }
+  @keyframes drift {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+
+  /* ---------- Sections ---------- */
+  section { padding: 88px 0; }
+  section.tight { padding: 64px 0; }
+
+  .section-label {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  h2.section-title {
+    font-size: clamp(28px, 4vw, 36px);
+    max-width: 20ch;
+    margin-bottom: 40px;
+  }
+
+  /* ---------- Capability list ---------- */
+  .capabilities {
+    display: flex;
+    flex-direction: column;
+  }
+  .capability {
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+  }
+  .capability:last-child { border-bottom: 1px solid var(--border); }
+  .capability h3 {
+    font-size: 23px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .capability p {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 58ch;
+  }
+
+  /* ---------- Recommends card ---------- */
+  .recommends {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 48px;
+    border: 1px solid var(--border);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  .recommends h2 {
+    font-size: 30px;
+    margin-bottom: 24px;
+  }
+  .recommends p {
+    color: var(--text);
+    margin-bottom: 18px;
+    font-size: 16.5px;
+  }
+  .recommends p:last-of-type { margin-bottom: 0; }
+  .disclosure-line {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--rose);
+  }
+
+  /* ---------- Privacy ---------- */
+  .privacy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .privacy-item h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .privacy-item p {
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .privacy-item .mark {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sage);
+    margin-right: 10px;
+    margin-bottom: 1px;
+  }
+
+  /* ---------- Waitlist ---------- */
+  .waitlist {
+    background: linear-gradient(135deg, var(--wl-a) 0%, var(--wl-b) 100%);
+    border: 1px solid var(--wl-border);
+    border-radius: 16px;
+    padding: 56px 48px;
+    text-align: left;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .waitlist h2 {
+    color: var(--wl-text);
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  .waitlist p.lead {
+    color: var(--wl-text-muted);
+    font-size: 16.5px;
+    max-width: 44ch;
+    margin-bottom: 32px;
+  }
+  .form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .form-row input[type="email"] {
+    flex: 1;
+    min-width: 220px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--wl-field-border);
+    background: var(--wl-field-bg);
+    color: var(--wl-text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .form-row input[type="email"]::placeholder { color: var(--wl-placeholder); }
+  .form-row input[type="email"]:focus { border-color: var(--gold-light); }
+  .form-row button {
+    padding: 14px 26px;
+    border-radius: 12px;
+    border: none;
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .form-row button:hover { background: var(--btn-bg-hover); }
+  .form-row button[disabled] { opacity: 0.6; cursor: default; }
+  .form-row button:focus-visible,
+  .form-row input:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+  .form-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--wl-note);
+  }
+  .form-success {
+    display: none;
+    color: var(--wl-text);
+    font-size: 16px;
+    padding: 14px 0 0;
+  }
+  .form-success.visible { display: block; }
+  .form-error {
+    display: none;
+    color: var(--error);
+    font-size: 14px;
+    padding: 12px 0 0;
+  }
+  .form-error.visible { display: block; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 56px 0 64px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .footer-links a:hover { color: var(--text); }
+  .footer-tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
+  }
+  .disclosure-footer {
+    margin-top: 32px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+  }
+
+  @media (max-width: 640px) {
+    .privacy-grid { grid-template-columns: 1fr; }
+    .recommends { padding: 32px 24px; }
+    .waitlist { padding: 40px 26px; }
+    section { padding: 64px 0; }
+    .hero { padding: 64px 0 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .thread { animation: none; }
+    html { scroll-behavior: auto; }
+    body, .recommends, .waitlist { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <span class="wordmark">Zorya</span>
+      <div class="nav-right">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2"/>
+            <path d="M12 2v2.2M12 19.8V22M4.5 4.5l1.6 1.6M17.9 17.9l1.6 1.6M2 12h2.2M19.8 12H22M4.5 19.5l1.6-1.6M17.9 6.1l1.6-1.6"/>
+          </svg>
+        </button>
+        <a class="nav-link" href="#waitlist">Join the waitlist</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Your beauty, dawn to dusk.</span>
+      <h1>The first app to unify your beauty maintenance into one intelligent schedule.</h1>
+      <p class="sub">
+        Professional treatments, at-home devices, and daily skincare, in one place.
+        Zorya handles the part nobody enjoys: the timing.
+      </p>
+      <div class="thread" role="presentation"></div>
+    </div>
+  </header>
+
+  <section id="what-it-does">
+    <div class="wrap">
+      <span class="section-label">What it does</span>
+      <h2 class="section-title">Less a beauty planner. More a piece of infrastructure for looking after yourself.</h2>
+
+      <div class="capabilities">
+        <div class="capability">
+          <h3>A real library, and a calendar that understands it</h3>
+          <p>
+            Hundreds of treatments across every category, from injectables and lasers to
+            lash lifts, at-home devices, and hair care. Book something once, set it
+            recurring, and see it all in week, month, or year view. Pick a time that
+            conflicts with something already scheduled, and Zorya tells you while you're
+            still choosing it, not after you've committed.
+          </p>
+        </div>
+        <div class="capability">
+          <h3>Daily care, sequenced properly</h3>
+          <p>
+            Build your morning and evening routines, check off each step, and get a
+            countdown when something needs to sit before the next layer goes on. New
+            actives go on a ladder that steps you up gently, and back down if your skin
+            objects.
+          </p>
+        </div>
+        <div class="capability">
+          <h3>A safety net that stays quiet until it matters</h3>
+          <p>
+            When two things are scheduled too close together, you get a note, not a wall.
+            A pregnancy-safe mode swaps out what it needs to. Recovery Mode notices when
+            you've had a peel or laser, and eases your stronger actives back in as you heal.
+          </p>
+        </div>
+        <div class="capability">
+          <h3>Event prep, worked backwards from the date</h3>
+          <p>
+            Tell Zorya about a wedding, a shoot, or a holiday, and it works backwards from
+            the date: what to start, what to taper, what to stop in time.
+          </p>
+        </div>
+        <div class="capability">
+          <h3>Reminders that respect you</h3>
+          <p>
+            Stack the frequencies you want, set quiet hours, and Zorya bundles extras into
+            one nudge rather than pecking at you all day.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tight">
+    <div class="wrap">
+      <div class="recommends">
+        <span class="section-label">Zorya Recommends</span>
+        <h2>How Zorya Recommends works</h2>
+
+        <p>Zorya does not take sides between brands. It does not care whose serum you own, and it will never tell you the thing on your shelf is wrong so you go buy a replacement.</p>
+
+        <p>But a routine has gaps. New users especially. It is hard to know which brands actually contain a real, verified dose of an active, and which are mostly marketing. You fill in your steps and there is one you have not sorted yet. Or your desired results would best be supported by a quality at home LED mask, or your hair keeps snagging on a cotton pillowcase night after night. That is when a suggestion shows up. A product, or a tool, sometimes a whole treatment category, sitting next to the part of your routine it belongs to. It won't look like an ad, and it definitely won't feel like a shop got bolted onto the side of your skincare app.</p>
+
+        <p>Fit comes first. If Zorya earns a commission on something it points you to, it says so, right there on the pick, every single time. It won't be buried inside a tip or dressed up as neutral advice. And if you would rather not see any of it, you switch the picks off and nothing else about the app changes.</p>
+
+        <p>That is the whole deal. Helpful when you need it, honest when there is money involved, and out of your way otherwise.</p>
+
+        <p class="disclosure-line">Some recommendations contain affiliate links. Where they do, you will always be told.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy">
+    <div class="wrap">
+      <span class="section-label">Privacy</span>
+      <h2 class="section-title">Yours, and private.</h2>
+
+      <div class="privacy-grid">
+        <div class="privacy-item">
+          <h3><span class="mark"></span>Medical history stays on your device</h3>
+          <p>
+            There is no table for it in our database. What you record about conditions,
+            medications, or pregnancy shapes your schedule locally. We cannot read it,
+            cannot lose it in a breach, and could not hand it over if asked.
+          </p>
+        </div>
+        <div class="privacy-item">
+          <h3><span class="mark"></span>Works fully offline</h3>
+          <p>
+            Your routines and schedule sync later, whenever you're back online. Nothing
+            about using Zorya requires a live connection.
+          </p>
+        </div>
+        <div class="privacy-item">
+          <h3><span class="mark"></span>Export or delete, any time</h3>
+          <p>
+            Take everything you've entered with you, or remove it entirely, without
+            emailing anyone to ask permission.
+          </p>
+        </div>
+        <div class="privacy-item">
+          <h3><span class="mark"></span>Calendar access, minimized</h3>
+          <p>
+            When Zorya reads your calendar to schedule around your life, it takes only
+            which days are busy. Never what the events are.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="waitlist" class="tight">
+    <div class="wrap">
+      <div class="waitlist">
+        <h2>Join the waitlist</h2>
+        <p class="lead">
+          Zorya is in early testing now. Leave your email and we'll let you know as
+          the beta opens up.
+        </p>
+
+        <form id="waitlist-form" novalidate>
+          <div class="form-row">
+            <label for="email" style="position:absolute; left:-9999px;">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@email.com" required autocomplete="email">
+            <button type="submit" id="submit-btn">Join the waitlist</button>
+          </div>
+          <p class="form-note" id="form-note">No spam. Just a note when there's a seat for you.</p>
+          <p class="form-success" id="form-success" role="status">You're on the list. We'll be in touch.</p>
+          <p class="form-error" id="form-error" role="alert"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <span class="footer-tag">Your beauty, dawn to dusk.</span>
+        <div class="footer-links">
+          <a href="privacy.html">Privacy</a>
+          <a href="mailto:hello@zoryaritual.com">Contact</a>
+        </div>
+      </div>
+      <p class="disclosure-footer">
+        Zorya is medically informed, not medical. Spacing and conflict guidance comes from
+        a curated table of known interactions, meant to help you time things sensibly.
+        It is not a diagnosis and not a substitute for a licensed provider. Some product
+        recommendations on this site and in the app may contain affiliate links, and are
+        always disclosed as such. &copy; <span id="year"></span> Zorya.
+      </p>
+    </div>
+  </footer>
+
+  <script src="theme.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ---------------------------------------------------------------
+    // Waitlist form.
+    //
+    // TO GO LIVE: create a form at https://formspree.io (free, no card),
+    // then paste the endpoint it gives you between the quotes below.
+    // It looks like: https://formspree.io/f/abcdwxyz
+    //
+    // Until that is filled in, the form deliberately does NOT claim a
+    // signup it cannot capture. It routes to email instead.
+    // ---------------------------------------------------------------
+    var FORMSPREE_ENDPOINT = '';
+
+    var CONTACT_EMAIL = 'hello@zoryaritual.com';
+
+    var form = document.getElementById('waitlist-form');
+    var row = form.querySelector('.form-row');
+    var note = document.getElementById('form-note');
+    var success = document.getElementById('form-success');
+    var errorEl = document.getElementById('form-error');
+    var btn = document.getElementById('submit-btn');
+    var input = document.getElementById('email');
+
+    var wired = FORMSPREE_ENDPOINT.indexOf('formspree.io') !== -1;
+
+    if (!wired) {
+      // No backend yet: be honest about it rather than faking a confirmation.
+      btn.textContent = 'Email to join';
+      note.textContent = 'Waitlist signup opens shortly. For now, email ' + CONTACT_EMAIL + ' and we will add you by hand.';
+    }
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.classList.add('visible');
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      errorEl.classList.remove('visible');
+
+      var value = input.value.trim();
+
+      if (!wired) {
+        window.location.href =
+          'mailto:' + CONTACT_EMAIL +
+          '?subject=' + encodeURIComponent('Zorya waitlist') +
+          '&body=' + encodeURIComponent('Please add me to the Zorya waitlist.\n\n' + value);
+        return;
+      }
+
+      if (!value || value.indexOf('@') === -1) {
+        showError('Please enter a valid email address.');
+        input.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+
+      fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: value })
+      })
+        .then(function (res) {
+          if (!res.ok) { throw new Error('Bad status ' + res.status); }
+          row.style.display = 'none';
+          note.style.display = 'none';
+          success.classList.add('visible');
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = 'Join the waitlist';
+          showError('Something went wrong. Please try again, or email ' + CONTACT_EMAIL + '.');
+        });
+    });
+  </script>
+
+</body>
+</html>

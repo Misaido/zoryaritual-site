@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy | Zorya</title>
+<meta name="description" content="What this website collects, which is almost nothing.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://zoryaritual.com/privacy.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<meta name="theme-color" content="#FAF7F4">
+
+<!-- Set the theme before first paint so there is no flash. -->
+<script>
+(function () {
+  try {
+    var s = localStorage.getItem('zorya-theme');
+    var d = s || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', d);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap">
+      <a class="wordmark" href="index.html">Zorya</a>
+      <div class="nav-right">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2"/>
+            <path d="M12 2v2.2M12 19.8V22M4.5 4.5l1.6 1.6M17.9 17.9l1.6 1.6M2 12h2.2M19.8 12H22M4.5 19.5l1.6-1.6M17.9 6.1l1.6-1.6"/>
+          </svg>
+        </button>
+        <a class="nav-link" href="index.html">Back to the site</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="wrap">
+      <h1>Privacy</h1>
+      <p class="meta">Last updated 2 September 2026</p>
+
+      <p class="lede">
+        This page covers this website. It is short, because the site does very little.
+      </p>
+
+      <div class="thread" role="presentation"></div>
+
+      <h2>What this site collects</h2>
+      <p>
+        Nothing, unless you type your email into the waitlist form and submit it. There are no
+        cookies, no analytics, no advertising pixels, and no tracking of how you move around
+        the page.
+      </p>
+
+      <h2>If you join the waitlist</h2>
+      <p>
+        We store the email address you give us, and nothing else. We use it for one purpose:
+        to tell you when the beta opens up. We do not sell it, rent it, or pass it to anyone
+        for their own marketing.
+      </p>
+      <p>
+        You can be removed at any time by emailing
+        <a href="mailto:hello@zoryaritual.com">hello@zoryaritual.com</a>. We will delete the
+        address rather than mark it inactive, and we do not need a reason.
+      </p>
+
+      <h2>Who else touches your visit</h2>
+      <p>
+        A static website still passes through other people's servers. In the interest of being
+        straight with you, here is the full list:
+      </p>
+      <ul>
+        <li>
+          <strong>GitHub Pages</strong> hosts these files. GitHub receives standard web server
+          request data, including your IP address.
+        </li>
+        <li>
+          <strong>Cloudflare</strong> handles the domain's DNS, and routes your request to the
+          host.
+        </li>
+        <li>
+          <strong>Google Fonts</strong> serves the two typefaces this site uses. Loading them
+          sends your IP address to Google. If you would rather that did not happen, a font
+          blocker or a privacy-focused browser will stop it, and the site still works.
+        </li>
+        <li>
+          <strong>Formspree</strong> receives your email address if, and only if, you submit
+          the waitlist form.
+        </li>
+      </ul>
+
+      <h2>The app is a separate matter</h2>
+      <p>
+        Zorya the application handles far more than an email address, and it is governed by
+        its own privacy policy rather than this one. That policy is published with the app.
+        The short version, which the app is actually built around: your medical history,
+        questionnaire answers, and photos stay on your device and never reach us.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        If you are in the UK, the EU, or another region with data protection law, you have the
+        right to ask what we hold about you, to correct it, to have it deleted, and to object
+        to how it is used. Given that what we hold is an email address you typed in yourself,
+        exercising any of these is a one-line email to
+        <a href="mailto:hello@zoryaritual.com">hello@zoryaritual.com</a>.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If this notice changes in a way that matters, the date at the top changes with it.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        <a href="mailto:hello@zoryaritual.com">hello@zoryaritual.com</a>
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="mailto:hello@zoryaritual.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="theme.js"></script>
+</body>
+</html>

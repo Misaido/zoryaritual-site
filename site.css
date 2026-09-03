@@ -1,0 +1,190 @@
+/* Shared styling for the simple text pages (privacy, 404).
+   The landing page keeps its own self-contained styles.
+   Dark tokens mirror the app's "Glamour" theme. */
+
+:root,
+:root[data-theme="light"] {
+  --bg: #FAF7F4;
+  --card: #FFFFFF;
+  --border: rgba(26, 20, 16, 0.09);
+  --text: #1A1410;
+  --muted: #7A6A5A;
+  --gold: #B8924A;
+  --gold-light: #D4AF72;
+  --rose: #C4847A;
+  --violet: #7A6490;
+  --btn-fg: #1A1410;
+  --btn-bg-hover: #E4C08A;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0D0A12;
+  --card: #17121F;
+  --border: #2E2240;
+  --text: #F5F0EB;
+  --muted: #9A8A7A;
+  --gold: #C9A84C;
+  --gold-light: #E0C070;
+  --rose: #C4847A;
+  --violet: #9B7FBF;
+  --btn-fg: #0D0A12;
+  --btn-bg-hover: #EED08A;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+p, ul { margin: 0 0 18px; }
+ul { padding-left: 22px; }
+li { margin-bottom: 8px; }
+
+a { color: var(--gold); }
+a:hover { color: var(--text); }
+
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.nav { padding: 32px 0 0; }
+.nav .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.wordmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: var(--text);
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.nav-link {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.nav-link:hover { color: var(--text); border-color: var(--gold); }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.theme-toggle:hover { color: var(--gold); border-color: var(--gold); }
+.theme-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.theme-toggle svg { width: 17px; height: 17px; display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon,
+:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+
+.thread {
+  margin: 40px 0 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--gold) 0%,
+    var(--gold-light) 22%,
+    var(--rose) 50%,
+    var(--violet) 78%,
+    var(--gold) 100%
+  );
+  opacity: 0.85;
+}
+
+main { padding: 56px 0 88px; }
+
+main h1 {
+  font-size: clamp(32px, 5vw, 44px);
+  margin-bottom: 12px;
+}
+main h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 44px 0 14px;
+}
+.meta {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin-bottom: 36px;
+}
+.lede {
+  font-size: 18.5px;
+  color: var(--muted);
+  max-width: 52ch;
+  margin-bottom: 8px;
+}
+
+footer {
+  padding: 40px 0 64px;
+  border-top: 1px solid var(--border);
+}
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.footer-links a:hover { color: var(--text); }
+
+/* 404 */
+.center { text-align: center; padding: 100px 0 120px; }
+.center h1 { font-size: clamp(40px, 7vw, 64px); margin-bottom: 16px; }
+.center p { color: var(--muted); font-size: 18px; margin-bottom: 32px; }
+.btn {
+  display: inline-block;
+  padding: 13px 28px;
+  border-radius: 12px;
+  background: var(--gold-light);
+  color: var(--btn-fg);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.btn:hover { background: var(--btn-bg-hover); color: var(--btn-fg); }
+
+@media (max-width: 640px) {
+  main { padding: 40px 0 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { transition: none; }
+}

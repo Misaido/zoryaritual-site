@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="dawn" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D4AF72"/>
+      <stop offset="55%" stop-color="#C4847A"/>
+      <stop offset="100%" stop-color="#7A6490"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#1A1410"/>
+  <path d="M20 21h24L24 43h20"
+        fill="none"
+        stroke="url(#dawn)"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>
