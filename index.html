@@ -665,14 +665,14 @@
     // ---------------------------------------------------------------
     // Waitlist form.
     //
-    // TO GO LIVE: create a form at https://formspree.io (free, no card),
-    // then paste the endpoint it gives you between the quotes below.
-    // It looks like: https://formspree.io/f/abcdwxyz
+    // Submissions go to the "Zorya Waitlist" form on Formspree, which
+    // emails hello@zoryaritual.com. Zoho files those alerts under
+    // Notifications, not Inbox.
     //
-    // Until that is filled in, the form deliberately does NOT claim a
+    // If this is ever emptied, the form deliberately does NOT claim a
     // signup it cannot capture. It routes to email instead.
     // ---------------------------------------------------------------
-    var FORMSPREE_ENDPOINT = '';
+    var FORMSPREE_ENDPOINT = 'https://formspree.io/f/meaqblne';
 
     var CONTACT_EMAIL = 'hello@zoryaritual.com';
 
@@ -761,7 +761,7 @@
       fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: value })
+        body: JSON.stringify({ email: value, _subject: 'New Zorya waitlist signup' })
       })
         .then(function (res) {
           if (!res.ok) { throw new Error('Bad status ' + res.status); }
