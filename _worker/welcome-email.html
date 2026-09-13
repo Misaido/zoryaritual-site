@@ -1,0 +1,56 @@
+<!--
+  Zorya waitlist welcome email. Lives in Resend as a template, sent by the
+  Automation that listens for "waitlist.joined".
+
+  Subject: You're on the Zorya waitlist
+  Preview: Your spot is saved.
+
+  Email clients ignore web fonts and <style> blocks unevenly, so everything
+  is inline and the brand fonts fall back to Georgia and the system sans.
+  {{{RESEND_UNSUBSCRIBE_URL}}} is filled in by Resend for each person.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You're on the Zorya waitlist</title>
+</head>
+<body style="margin:0; padding:0; background:#FAF7F4;">
+<div style="display:none; max-height:0; overflow:hidden;">Your spot is saved.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAF7F4;">
+  <tr>
+    <td align="center" style="padding:40px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background:#FFFFFF; border:1px solid #EDE6DF; border-radius:12px;">
+        <tr>
+          <td style="padding:40px 36px 12px; font-family:'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-size:30px; line-height:1.2; color:#1A1410;">
+            You're on the list
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 36px 32px; font-family:'DM Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:16px; line-height:1.6; color:#1A1410;">
+            <p style="margin:16px 0;">Hi,</p>
+            <p style="margin:16px 0;">Thank you for joining the Zorya waitlist.</p>
+            <p style="margin:16px 0;">Zorya brings your skincare, treatments and appointments into one calm schedule, along with the recovery time between them. It also warns you when two treatments are booked too close together.</p>
+            <p style="margin:16px 0;">We're testing with a small group right now. When a spot opens for you in the beta, we'll send you one email with everything you need to join.</p>
+            <p style="margin:16px 0;">Until then, that's all. No newsletters and no daily deals.</p>
+            <p style="margin:16px 0;">If you have a question, just reply. This address reaches a real person.</p>
+            <p style="margin:24px 0 0;">With care,<br>CJ<br><span style="color:#7A6A5A;">Founder, Zorya</span></p>
+          </td>
+        </tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+        <tr>
+          <td style="padding:20px 36px; font-family:'DM Sans', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:12px; line-height:1.6; color:#7A6A5A; text-align:center;">
+            You're getting this because you joined the waitlist at
+            <a href="https://zoryaritual.com" style="color:#7A6A5A;">zoryaritual.com</a>.
+            <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#B8924A;">Unsubscribe</a>
+            and your address is deleted, not just paused.
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
