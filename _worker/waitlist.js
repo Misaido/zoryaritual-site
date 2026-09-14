@@ -171,7 +171,19 @@ async function handleJoin(request, env, ctx) {
     if (!resubscribed.ok) {
       return json({ ok: false, error: 'upstream' }, 502, cors);
     }
-  } else if (existing.status !== 404) {
+  } else if (existing.status === 404) {
+    // Create the contact ourselves, marked subscribed, before the event.
+    // Resend keeps deleted contacts in the background: leaving creation to
+    // the Automation revives someone who once unsubscribed still marked
+    // unsubscribed, and their welcome email is silently skipped.
+    const created = await resend(env, '/contacts', {
+      method: 'POST',
+      body: JSON.stringify({ email, unsubscribed: false }),
+    });
+    if (!created.ok) {
+      return json({ ok: false, error: 'upstream' }, 502, cors);
+    }
+  } else {
     return json({ ok: false, error: 'upstream' }, 502, cors);
   }
 

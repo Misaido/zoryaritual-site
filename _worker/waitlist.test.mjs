@@ -96,6 +96,28 @@ test('a new signup sends the join event', async () => {
   assert.deepEqual(JSON.parse(sent.body), { event: 'waitlist.joined', email: 'new@example.com' });
 });
 
+test('a new signup creates the contact as subscribed before the event', async () => {
+  await join({ email: 'returning@example.com', turnstileToken: 't' });
+  const order = resendCalls().slice(0, 3).map((c) => `${c.method} ${new URL(c.url).pathname}`);
+  assert.deepEqual(order, ['GET /contacts/returning%40example.com', 'POST /contacts', 'POST /events/send']);
+  const created = resendCalls()[1];
+  assert.deepEqual(JSON.parse(created.body), { email: 'returning@example.com', unsubscribed: false });
+});
+
+test('if creating the contact fails, no event is sent and the visitor sees an error', async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init = {}) => {
+    if ((init.method || 'GET') === 'POST' && url.endsWith('/contacts')) {
+      calls.push({ url, method: 'POST', body: init.body });
+      return Response.json({ message: 'nope' }, { status: 500 });
+    }
+    return realFetch(url, init);
+  };
+  const res = await join({ email: 'unlucky@example.com', turnstileToken: 't' });
+  assert.equal(res.status, 502);
+  assert.equal(resendCalls().some((c) => c.url.endsWith('/events/send')), false);
+});
+
 test('someone already on the list gets no second welcome', async () => {
   contactLookup = { status: 200, body: { id: 'c1', unsubscribed: false } };
   const res = await join({ email: 'again@example.com', turnstileToken: 't' });
