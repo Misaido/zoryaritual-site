@@ -19,8 +19,10 @@ secret anyway: keys live only in Cloudflare and Resend.
 2. Resend calls this Worker at `/resend-webhook` with `contact.updated`.
 3. The Worker verifies the signature and deletes the contact.
 
-Deletion is deliberate: `privacy.html` promises removed addresses are deleted, not marked
-inactive. Someone who emails hello@ instead gets deleted by hand in Resend → Contacts.
+Deleting keeps the list itself clean. Resend's delete is not a hard delete, though: the
+record stays in the background, and the same address coming back revives the same contact
+id. `privacy.html` says so plainly. Someone who emails hello@ instead gets deleted by hand
+in Resend → Contacts.
 
 ## Where each piece lives
 
@@ -39,11 +41,11 @@ inactive. Someone who emails hello@ instead gets deleted by hand in Resend → C
 **Unsubscribe page** (Resend → Settings → Unsubscribe Page)
 
 - Title: `You're off the list`
-- Description: `Your email address has been deleted from the Zorya waitlist, and you won't hear from us again. If you change your mind, you can rejoin any time at zoryaritual.com.`
+- Description: `Your email address has been removed from the Zorya waitlist, and you won't hear from us again. If you change your mind, you can rejoin any time at zoryaritual.com.`
 
 **Reply for a removal request sent to hello@** (save as a Zoho template)
 
-> Hi, all done. I've deleted your email address from the Zorya waitlist, so you won't hear
+> Hi, all done. I've removed your email address from the Zorya waitlist, so you won't hear
 > from us again. Thank you for your interest, and the form at zoryaritual.com is always open
 > if you'd like to come back.
 > CJ
