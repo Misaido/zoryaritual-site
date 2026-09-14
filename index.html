@@ -142,10 +142,20 @@
     gap: 16px;
   }
   .wordmark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
+    font-size: 29px;
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.005em;
+  }
+  .wordmark::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
   }
   .nav-right {
     display: flex;
@@ -191,11 +201,20 @@
   .hero {
     padding: 96px 0 0;
   }
+  .brandmark {
+    font-size: 13px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: block;
+  }
   .eyebrow {
     font-size: 13px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--muted);
     font-weight: 600;
     margin-bottom: 20px;
     display: block;
@@ -489,6 +508,7 @@
 
   <header class="hero">
     <div class="wrap">
+      <span class="brandmark">Zorya</span>
       <span class="eyebrow">Your beauty, dawn to dusk.</span>
       <h1>The first app to unify your beauty maintenance into one intelligent schedule.</h1>
       <p class="sub">
