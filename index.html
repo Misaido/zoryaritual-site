@@ -624,15 +624,20 @@
             <button type="submit" id="submit-btn">Join the waitlist</button>
           </div>
 
-          <!-- Honeypot. Named _gotcha, which Formspree also discards server
+          <!-- Honeypot. Named _gotcha, which the Worker also refuses server
                side, so a bot has to beat both checks. tabindex="-1" keeps it
                out of the keyboard tab order for screen reader users. -->
           <div class="hp" aria-hidden="true">
             <label for="company">Company (leave this empty)</label>
             <input type="text" id="company" name="_gotcha" tabindex="-1" autocomplete="off">
           </div>
+          <!-- Cloudflare Turnstile, the bot check. "interaction-only" keeps it
+               invisible unless Cloudflare needs the visitor to tick a box. -->
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAEzNyV0gCRdq4oTg"
+               data-appearance="interaction-only" data-callback="onTurnstileToken"
+               data-expired-callback="onTurnstileExpired"></div>
           <p class="form-note" id="form-note">No spam. Just a note when there's a seat for you.</p>
-          <p class="form-success" id="form-success" role="status">You're on the list. We'll be in touch.</p>
+          <p class="form-success" id="form-success" role="status">You're on the list. A welcome note is on its way to your inbox.</p>
           <p class="form-error" id="form-error" role="alert"></p>
         </form>
       </div>
@@ -665,14 +670,15 @@
     // ---------------------------------------------------------------
     // Waitlist form.
     //
-    // Submissions go to the "Zorya Waitlist" form on Formspree, which
-    // emails hello@zoryaritual.com. Zoho files those alerts under
-    // Notifications, not Inbox.
+    // Signups go to the Cloudflare Worker in _worker/, which adds the
+    // person to Resend and triggers the welcome email. See
+    // _worker/README.md for the whole flow.
     //
     // If this is ever emptied, the form deliberately does NOT claim a
     // signup it cannot capture. It routes to email instead.
     // ---------------------------------------------------------------
-    var FORMSPREE_ENDPOINT = 'https://formspree.io/f/meaqblne';
+    var WAITLIST_ENDPOINT = 'https://api.zoryaritual.com/join';
+    var TURNSTILE_WAIT_MS = 8000;
 
     var CONTACT_EMAIL = 'hello@zoryaritual.com';
 
@@ -685,7 +691,30 @@
     var input = document.getElementById('email');
     var honeypot = document.getElementById('company');
 
-    var wired = FORMSPREE_ENDPOINT.indexOf('formspree.io') !== -1;
+    var wired = WAITLIST_ENDPOINT !== '';
+
+    // Turnstile hands over a single-use token once it has decided the
+    // visitor is a person. It usually arrives before anyone clicks.
+    var turnstileToken = '';
+    var tokenWaiters = [];
+    window.onTurnstileToken = function (token) {
+      turnstileToken = token;
+      tokenWaiters.splice(0).forEach(function (resolve) { resolve(token); });
+    };
+    window.onTurnstileExpired = function () { turnstileToken = ''; };
+
+    function waitForToken() {
+      if (turnstileToken) { return Promise.resolve(turnstileToken); }
+      return new Promise(function (resolve) {
+        tokenWaiters.push(resolve);
+        setTimeout(function () { resolve(''); }, TURNSTILE_WAIT_MS);
+      });
+    }
+
+    function freshToken() {
+      turnstileToken = '';
+      if (window.turnstile) { window.turnstile.reset(); }
+    }
 
     // A value beginning with one of these is treated as a formula by Excel
     // and Google Sheets, so an exported waitlist CSV could execute it. No
@@ -758,22 +787,42 @@
       btn.disabled = true;
       btn.textContent = 'Joining...';
 
-      fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: value, _subject: 'New Zorya waitlist signup' })
-      })
+      function fail(message) {
+        btn.disabled = false;
+        btn.textContent = 'Join the waitlist';
+        freshToken();
+        showError(message);
+      }
+
+      waitForToken()
+        .then(function (token) {
+          if (!token) {
+            throw { status: 403 };
+          }
+          return fetch(WAITLIST_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: value, turnstileToken: token })
+          });
+        })
         .then(function (res) {
-          if (!res.ok) { throw new Error('Bad status ' + res.status); }
+          if (!res.ok) { throw { status: res.status }; }
           showSuccess();
         })
-        .catch(function () {
-          btn.disabled = false;
-          btn.textContent = 'Join the waitlist';
-          showError('Something went wrong. Please try again, or email ' + CONTACT_EMAIL + '.');
+        .catch(function (err) {
+          var status = err && err.status;
+          if (status === 400) {
+            fail('Please enter a valid email address.');
+          } else if (status === 403) {
+            fail('We couldn\'t confirm you\'re not a bot. Please try again, or email ' + CONTACT_EMAIL + '.');
+          } else {
+            fail('Something went wrong. Please try again, or email ' + CONTACT_EMAIL + '.');
+          }
         });
     });
   </script>
+  <!-- Loaded after the script above so its callbacks exist before the widget runs. -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 </body>
 </html>
