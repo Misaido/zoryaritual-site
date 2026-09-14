@@ -11,9 +11,9 @@
 //                         address in it.
 //
 //   POST /resend-webhook  Resend calls this when a contact changes. When
-//                         someone has unsubscribed, their contact is deleted,
-//                         because privacy.html promises deletion rather than
-//                         an "inactive" flag.
+//                         someone has unsubscribed, their contact is deleted
+//                         from the list. (Resend still keeps a background
+//                         record, which privacy.html discloses.)
 //
 // Secrets (set in Cloudflare, never in this file):
 //   RESEND_API_KEY          Full access key. A sending-only key cannot touch contacts.
