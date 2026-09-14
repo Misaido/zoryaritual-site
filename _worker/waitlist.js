@@ -6,7 +6,9 @@
 //   POST /join            The waitlist form posts here. Checks the bot guard,
 //                         then sends Resend the "waitlist.joined" event. A
 //                         Resend Automation listening for that event creates
-//                         the contact and sends the welcome email.
+//                         the contact and sends the welcome email. Then
+//                         hello@ gets a note with the new total, and no
+//                         address in it.
 //
 //   POST /resend-webhook  Resend calls this when a contact changes. When
 //                         someone has unsubscribed, their contact is deleted,
@@ -22,6 +24,12 @@
 
 const ALLOWED_ORIGINS = ['https://zoryaritual.com', 'https://www.zoryaritual.com'];
 const JOIN_EVENT = 'waitlist.joined';
+// CJ gets a note for each new signup. It deliberately leaves out the address,
+// so an unsubscribe leaves no copy behind in the inbox.
+const NOTIFY_FROM = 'Zorya <hello@zoryaritual.com>';
+const NOTIFY_TO = 'hello@zoryaritual.com';
+const CONTACTS_PAGE_SIZE = 100;
+const MAX_CONTACT_PAGES = 50;
 const RESEND_API = 'https://api.resend.com';
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 // Svix, which signs Resend webhooks, rejects anything older than five minutes.
@@ -80,7 +88,48 @@ async function passesTurnstile(env, token, ip) {
   return outcome.success === true;
 }
 
-async function handleJoin(request, env) {
+// The Automation creates the contact a moment after the event, so the new
+// person may not be in the list yet. Count them either way.
+export async function countWithNewcomer(env, email) {
+  const target = email.toLowerCase();
+  let total = 0;
+  let seen = false;
+  let after = '';
+  for (let page = 0; page < MAX_CONTACT_PAGES; page++) {
+    const res = await resend(env, `/contacts?limit=${CONTACTS_PAGE_SIZE}` + (after ? `&after=${encodeURIComponent(after)}` : ''));
+    if (!res.ok) return null;
+    const { data = [], has_more: hasMore } = await res.json();
+    total += data.length;
+    if (data.some((c) => typeof c.email === 'string' && c.email.toLowerCase() === target)) seen = true;
+    if (!hasMore || data.length === 0) break;
+    after = data[data.length - 1].id;
+  }
+  return seen ? total : total + 1;
+}
+
+export function signupNoteText(count) {
+  const tally = count === null ? '' : ` You now have ${count} ${count === 1 ? 'person' : 'people'} on the list.`;
+  return `Someone new joined the Zorya waitlist.${tally}\n\nSee everyone in Resend: https://resend.com/audience`;
+}
+
+async function notifyNewSignup(env, email) {
+  try {
+    const count = await countWithNewcomer(env, email);
+    await resend(env, '/emails', {
+      method: 'POST',
+      body: JSON.stringify({
+        from: NOTIFY_FROM,
+        to: [NOTIFY_TO],
+        subject: 'New Zorya waitlist signup',
+        text: signupNoteText(count),
+      }),
+    });
+  } catch {
+    // A missed note must never turn a good signup into an error.
+  }
+}
+
+async function handleJoin(request, env, ctx) {
   const cors = corsHeaders(request.headers.get('Origin'));
 
   let body;
@@ -133,6 +182,8 @@ async function handleJoin(request, env) {
   if (!sent.ok) {
     return json({ ok: false, error: 'upstream' }, 502, cors);
   }
+  // Runs after the visitor already has their answer.
+  ctx.waitUntil(notifyNewSignup(env, email));
   return json({ ok: true }, 200, cors);
 }
 
@@ -207,14 +258,14 @@ async function handleWebhook(request, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
 
     if (pathname === '/join') {
       if (request.method === 'OPTIONS') {
         return new Response(null, { status: 204, headers: corsHeaders(request.headers.get('Origin')) });
       }
-      if (request.method === 'POST') return handleJoin(request, env);
+      if (request.method === 'POST') return handleJoin(request, env, ctx);
     }
 
     if (pathname === '/resend-webhook' && request.method === 'POST') {
