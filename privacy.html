@@ -50,7 +50,7 @@
   <main>
     <div class="wrap">
       <h1>Privacy</h1>
-      <p class="meta">Last updated 2 September 2026</p>
+      <p class="meta">Last updated 13 September 2026</p>
 
       <p class="lede">
         This page covers this website. It is short, because the site does very little.
@@ -60,21 +60,21 @@
 
       <h2>What this site collects</h2>
       <p>
-        Nothing, unless you type your email into the waitlist form and submit it. There are no
-        cookies, no analytics, no advertising pixels, and no tracking of how you move around
-        the page.
+        Nothing, unless you type your email into the waitlist form and submit it. We set no
+        cookies, and there are no analytics, no advertising pixels, and no tracking of how you
+        move around the page.
       </p>
 
       <h2>If you join the waitlist</h2>
       <p>
-        We store the email address you give us, and nothing else. We use it for one purpose:
-        to tell you when the beta opens up. We do not sell it, rent it, or pass it to anyone
-        for their own marketing.
+        We store the email address you give us, and nothing else. We send one welcome note when
+        you sign up, and after that we write only to tell you when the beta opens up. We do not
+        sell your address, rent it, or pass it to anyone for their own marketing.
       </p>
       <p>
-        You can be removed at any time by emailing
-        <a href="mailto:hello@zoryaritual.com">hello@zoryaritual.com</a>. We will delete the
-        address rather than mark it inactive, and we do not need a reason.
+        You can be removed at any time. Click unsubscribe in any email from us, or email
+        <a href="mailto:hello@zoryaritual.com">hello@zoryaritual.com</a>. Either way the address
+        is deleted rather than marked inactive, and we do not need a reason.
       </p>
 
       <h2>Who else touches your visit</h2>
@@ -89,7 +89,12 @@
         </li>
         <li>
           <strong>Cloudflare</strong> handles the domain's DNS, and routes your request to the
-          host.
+          host. It also runs the small service that receives the waitlist form.
+        </li>
+        <li>
+          <strong>Cloudflare Turnstile</strong> checks, in the background, that the waitlist
+          form is being used by a person rather than a bot. It loads with the page and receives
+          your IP address and basic information about your browser to make that call.
         </li>
         <li>
           <strong>Google Fonts</strong> serves the two typefaces this site uses. Loading them
@@ -97,8 +102,8 @@
           blocker or a privacy-focused browser will stop it, and the site still works.
         </li>
         <li>
-          <strong>Formspree</strong> receives your email address if, and only if, you submit
-          the waitlist form.
+          <strong>Resend</strong> stores your email address if, and only if, you submit the
+          waitlist form, and sends our emails to you.
         </li>
       </ul>
 
