@@ -30,6 +30,7 @@
     var s = localStorage.getItem('zorya-theme');
     var d = s || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', d);
+    document.documentElement.classList.add('js');
   } catch (e) {
     document.documentElement.setAttribute('data-theme', 'light');
   }
@@ -130,6 +131,9 @@
     margin: 0 auto;
     padding: 0 28px;
   }
+  @media (min-width: 960px) {
+    .wrap { max-width: 1120px; padding: 0 48px; }
+  }
 
   /* ---------- Nav ---------- */
   .nav {
@@ -199,32 +203,60 @@
 
   /* ---------- Hero ---------- */
   .hero {
-    padding: 96px 0 0;
+    position: relative;
+    isolation: isolate;
+    padding: 64px 0 0;
+    overflow: hidden;
+  }
+  /* A slow, low-opacity dawn glow behind the hero. Decorative only. */
+  .hero::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: -8%;
+    width: min(640px, 80vw);
+    height: min(640px, 80vw);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--rose) 0%, var(--violet) 42%, transparent 70%);
+    opacity: 0.16;
+    filter: blur(36px);
+    pointer-events: none;
   }
   .brandmark {
-    font-size: 13px;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(64px, 11vw, 124px);
     font-weight: 600;
-    margin-bottom: 14px;
-    display: block;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 0.12em;
+    margin-bottom: 18px;
+  }
+  .brandmark::after {
+    content: '';
+    width: 0.07em;
+    height: 0.07em;
+    border-radius: 50%;
+    background: var(--gold);
   }
   .eyebrow {
     font-size: 13px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--gold);
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     display: block;
   }
   .hero h1 {
-    font-size: clamp(38px, 6vw, 58px);
-    max-width: 13ch;
+    font-size: clamp(36px, 6vw, 58px);
+    max-width: 14ch;
   }
   .hero .sub {
-    margin-top: 26px;
+    margin-top: 24px;
     font-size: 19px;
     color: var(--muted);
     max-width: 46ch;
@@ -233,7 +265,7 @@
 
   /* ---------- Signature: dawn-to-dusk thread ---------- */
   .thread {
-    margin-top: 56px;
+    margin-top: 44px;
     height: 2px;
     width: 100%;
     border-radius: 2px;
@@ -255,8 +287,8 @@
   }
 
   /* ---------- Sections ---------- */
-  section { padding: 88px 0; }
-  section.tight { padding: 64px 0; }
+  section { padding: 56px 0; }
+  section.tight { padding: 36px 0; }
 
   .section-label {
     font-size: 13px;
@@ -269,9 +301,9 @@
   }
 
   h2.section-title {
-    font-size: clamp(28px, 4vw, 36px);
-    max-width: 20ch;
-    margin-bottom: 40px;
+    font-size: clamp(28px, 4vw, 40px);
+    max-width: 22ch;
+    margin-bottom: 28px;
   }
 
   /* ---------- Capability list ---------- */
@@ -280,7 +312,7 @@
     flex-direction: column;
   }
   .capability {
-    padding: 32px 0;
+    padding: 24px 0;
     border-top: 1px solid var(--border);
   }
   .capability:last-child { border-bottom: 1px solid var(--border); }
@@ -470,18 +502,83 @@
     max-width: 62ch;
   }
 
+  @media (min-width: 960px) {
+    .hero { padding: 88px 0 0; }
+    .hero h1 { font-size: clamp(44px, 4.6vw, 64px); max-width: 18ch; }
+    .hero .sub { font-size: 20px; max-width: 52ch; }
+    .capabilities {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 64px;
+      border-bottom: 1px solid var(--border);
+    }
+    .capability { padding: 36px 0; }
+    .capability:last-child { border-bottom: none; }
+    .privacy-grid { grid-template-columns: repeat(4, 1fr); gap: 36px; }
+    .recommends { padding: 64px; }
+    .recommends h2 { font-size: 36px; }
+    .waitlist {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 72px;
+      align-items: center;
+      padding: 72px 64px;
+    }
+    .waitlist h2 { font-size: 38px; }
+    .waitlist form { grid-column: 2; grid-row: 1 / span 2; }
+    .waitlist p.lead { margin-bottom: 0; }
+  }
+
   @media (max-width: 640px) {
     .privacy-grid { grid-template-columns: 1fr; }
     .recommends { padding: 32px 24px; }
     .waitlist { padding: 40px 26px; }
-    section { padding: 64px 0; }
-    .hero { padding: 64px 0 0; }
+    section { padding: 44px 0; }
+    section.tight { padding: 28px 0; }
+    .hero { padding: 48px 0 0; }
+    .thread { margin-top: 36px; }
+  }
+
+  /* Scroll reveal: content is only hidden once JS has run, so no-JS visitors see everything. */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .js .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero .brandmark,
+    .hero .eyebrow,
+    .hero h1,
+    .hero .sub {
+      animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .hero .eyebrow { animation-delay: 0.12s; }
+    .hero h1 { animation-delay: 0.22s; }
+    .hero .sub { animation-delay: 0.34s; }
+    .hero .thread {
+      animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.46s both, drift 14s linear infinite;
+    }
+    .hero::before { animation: glow-drift 26s ease-in-out infinite alternate; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes glow-drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(-6%, 8%) scale(1.08); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .thread { animation: none; }
     html { scroll-behavior: auto; }
     body, .recommends, .waitlist { transition: none; }
+    .js .reveal { opacity: 1; transform: none; transition: none; }
   }
 </style>
 </head>
@@ -689,6 +786,25 @@
   <script src="theme.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Gentle fade-up as sections scroll into view. Skipped for reduced motion.
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) { return; }
+      var blocks = document.querySelectorAll('section .wrap > *');
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+      Array.prototype.forEach.call(blocks, function (el) {
+        el.classList.add('reveal');
+        io.observe(el);
+      });
+    })();
 
     // ---------------------------------------------------------------
     // Waitlist form.
